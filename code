@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Quote Generator</title>
+    <style>
+        /* Body styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f6fc; /* Light background color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            transition: background-color 0.3s ease;
+        }
+        .background-image{
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        /* Dark Mode Styling */
+        .dark-mode {
+            background-color: #333;
+            color: #f2f6fc;
+        }
+
+        /* Container styling */
+        .container {
+            text-align: center;
+            background-color: #ffffff; /* White background for the quote container */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 500px;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Header styling */
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        /* Quote text styling */
+        #quote {
+            font-size: 22px;
+            color: #555;
+            margin-bottom: 20px;
+            font-style: italic;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        /* Author name styling */
+        #author {
+            font-size: 18px;
+            color: #777;
+            margin-top: 10px;
+        }
+
+        /* Button styling */
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Share buttons styling */
+        .share-buttons {
+            margin-top: 20px;
+        }
+
+        .share-btn {
+            margin: 5px;
+            padding: 10px 20px;
+            background-color: #1da1f2;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .share-btn:hover {
+            background-color: #0d8ddb;
+        }
+
+        /* Dark Mode Button Styling */
+        .toggle-button {
+            background-color: #555;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        /* Category Dropdown */
+        select {
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Random Quote Generator</h1>
+
+        <p id="quote"></p>
+        <p id="author"></p>
+        <p id="bio"></p>
+
+        <button onclick="generateQuote()">Get New Quote</button>
+
+        <div class="share-buttons">
+            <a href="#" target="_blank" id="twitter-share" class="share-btn">Share on Twitter</a>
+            <a href="#" target="_blank" id="facebook-share" class="share-btn">Share on Facebook</a>
+        </div>
+
+        <button class="toggle-button" onclick="toggleMode()">Toggle Dark/Light Mode</button>
+
+        <select onchange="changeCategory(this.value)">
+            <option value="motivational">Motivational</option>
+            <option value="funny">Funny</option>
+            <option value="life">Life</option>
+        </select>
+
+        <button onclick="saveFavorite()">Save as Favorite</button>
+    </div>
+
+    <script>
+        // Quotes array with categories
+        const categories = {
+            motivational: [
+                { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+                { text: "Success is not final, failure is not fatal: It is the courage to continue that counts.", author: "Winston Churchill" }
+            ],
+            funny: [
+                { text: "I'm writing a book. I've got the page numbers done.", author: "Steven Wright" },
+                { text: "I used to think I was indecisive, but now I'm not so sure.", author: "Unknown" }
+            ],
+            life: [
+                { text: "Life is what happens when you're busy making other plans.", author: "John Lennon" },
+                { text: "In the end, we will remember not the words of our enemies, but the silence of our friends.", author: "Martin Luther King Jr." }
+            ]
+        };
+
+        const backgrounds = [
+            "url('https://source.unsplash.com/random/1600x900/?nature')",
+            "url('https://source.unsplash.com/random/1600x900/?city')",
+            "url('https://source.unsplash.com/random/1600x900/?technology')"
+        ];
+
+        const authorsBio = {
+            "Steve Jobs": "Steve Jobs was the co-founder of Apple and a visionary in technology.",
+            "John Lennon": "John Lennon was a musician and member of The Beatles.",
+            "Winston Churchill": "Winston Churchill was the British Prime Minister during WWII."
+            // Add more authors with their bios
+        };
+
+        function generateQuote() {
+            const randomCategory = document.querySelector("select").value;
+            const quoteArray = categories[randomCategory];
+            const randomIndex = Math.floor(Math.random() * quoteArray.length);
+            const quote = quoteArray[randomIndex];
+
+            const quoteElement = document.getElementById("quote");
+            const authorElement = document.getElementById("author");
+            const bioElement = document.getElementById("bio");
+
+            // Change background image
+            const randomBackgroundIndex = Math.floor(Math.random() * backgrounds.length);
+            document.body.style.backgroundImage = backgrounds[randomBackgroundIndex];
+            document.body.style.backgroundSize = "cover";
+            document.body.style.backgroundPosition = "center";
+
+            // Fade-out effect
+            quoteElement.style.opacity = 0;
+            authorElement.style.opacity = 0;
+
+            setTimeout(() => {
+                // Set new quote and author
+                quoteElement.textContent = `"${quote.text}"`;
+                authorElement.textContent = `- ${quote.author}`;
+
+                // Display author's bio
+                bioElement.textContent = authorsBio[quote.author] || "No bio available.";
+
+                // Update social media links
+                document.getElementById("twitter-share").href = `https://twitter.com/intent/tweet?text="${quote.text}" - ${quote.author}`;
+                document.getElementById("facebook-share").href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote="${quote.text}" - ${quote.author}`;
+
+                // Fade-in effect
+                quoteElement.style.opacity = 1;
+                authorElement.style.opacity = 1;
+            }, 500);
+        }
+
+        function saveFavorite() {
+            const favoriteQuote = {
+                text: document.getElementById("quote").textContent,
+                author: document.getElementById("author").textContent
+            };
+            localStorage.setItem("favoriteQuote", JSON.stringify(favoriteQuote));
+            alert("Quote saved as favorite!");
+        }
+
+        function toggleMode() {
+            document.body.classList.toggle("dark-mode");
+        }
+
+        function changeCategory(category) {
+            const quoteArray = categories[category];
+            const randomIndex = Math.floor(Math.random() * quoteArray.length);
+            const quote = quoteArray[randomIndex];
+
+            const quoteElement = document.getElementById("quote");
+            const authorElement = document.getElementById("author");
+            const bioElement = document.getElementById("bio");
+
+            quoteElement.textContent = `"${quote.text}"`;
+            authorElement.textContent = `- ${quote.author}`;
+
+            bioElement.textContent = authorsBio[quote.author] || "No bio available.";
+        }
+
+        // Initialize with a quote
+        window.onload = generateQuote;
+    </script>
+</body>
+</html>
